@@ -1,0 +1,58 @@
+README - How to generate and use Iraf scripts like fits2txt.cl
+
+Instead of retyping several instances of commands such as "wtext input.fit output.txt" in Iraf, we can use some Unix commands to generate lists that can be used as .cl scripts. 
+
+1) Generate a list of the FITS files you want to convert. 
+
+Suppose I have my original & cropped FITS files all in one directory.  I can use the command "ls" to make a list of these. 
+
+user@user:/path/to/directory$ ls
+1_crop.fit  1.fit  2_crop.fit  2.fit  3_crop.fit  3.fit  4_crop.fit  4.fit  5_crop.fit  5.fit 
+
+user@user:/path/to/directory$ ls *crop.fit
+1_crop.fit 2_crop.fit 3_crop.fit 4_crop.fit 5_crop.fit
+
+I can also save this list to a file, and display that list in the terminal with "cat".
+
+user@user:/path/to/directory$ ls *crop.fit > list
+
+user@user:/path/to/directory$ cat list
+1_crop.fit
+2_crop.fit
+3_crop.fit
+4_crop.fit
+5_crop.fit
+
+
+2) Modify this list to add the desired Iraf commands & output file names. 
+
+Now, I can pipe either the "ls *crop.fit" or "cat list" commands into awk (or gawk), sed, grep (or egrep), etc. to modify my list.  Here, I'll use awk, and send the whole thing to a .cl file. 
+
+user@user:/path/to/directory$ cat list | awk '{printf "wtext %s ", $1; sub(/fit/, "txt"); print }' > fits2txt_list.cl
+
+**Here, awk first prints the string "wtext ", then the first column of the list (thus $1), and then does a substitution of "txt" for "fit" in a second print command. 
+ 
+And a cat just to show the contents came out right. 
+
+user@user:/path/to/directory$ cat fits2txt_list.cl 
+wtext 1_crop.fit 1_crop.txt
+wtext 2_crop.fit 2_crop.txt
+wtext 3_crop.fit 3_crop.txt
+wtext 4_crop.fit 4_crop.txt
+wtext 5_crop.fit 5_crop.txt
+
+If you want to add comments to the script, use "#" at the beginning of each comment line.
+
+
+3) Run the script in Iraf.
+
+As long as the package you want to use is loaded, the parameters will be the same for all files in your list, and your script is in the same directory as your files, you can just run the script from the Iraf prompt as:
+
+vocl> cl < fits2txt_list.cl 
+
+
+**A nice reference: 
+
+http://www.twilightlandscapes.com/IRAFtutorial/IRAFintro_04.html
+
+
