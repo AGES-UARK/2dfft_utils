@@ -1,4 +1,4 @@
-# README - 2dfft_utils
+# 2dfft_utils
 
 TODO 
 	- Clean up this README 	
