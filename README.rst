@@ -47,7 +47,7 @@ near future.
 User guide
 ==========
 
-Please see the `docs` folder for detailed instructions on how to get started.
+Please see the ``docs`` folder for detailed instructions on how to get started.
 
 .. note::
 
