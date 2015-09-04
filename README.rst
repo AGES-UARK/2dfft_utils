@@ -51,12 +51,12 @@ Please see the `docs` folder for detailed instructions on how to get started.
 
 .. note::
 
-	Note that instructions have been tested only in Ubuntu and Mac.
+	Instructions have been tested only in Ubuntu and Mac.
 	Instructions may need to be modified, and are not guaranteed for Windows.
 
 .. note::
 
-	Note that this guide was written for use with simulation data where galaxy
+	This guide was written for use with simulation data where galaxy
 	images are already face-on, and includes no scripts for de-projecting.
 
 	Pitch angle data from observational FITS that have been deprojected should
