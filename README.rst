@@ -13,7 +13,7 @@
 angle data for spiral galaxies a snap.
 
 Dependencies
-============
+############
 
 All scripts are currently standalone (so that you can pick and choose which to
 use), so users are encouraged to look at individual script dependencies.
@@ -26,12 +26,13 @@ If you plan on using all the scripts, you will need the following:
 	* `IRAF <http://iraf.noao.edu/>`_
 	* `PyRAF <http://www.stsci.edu/institute/software_hardware/pyraf>`_
 	* `AstroPy <http://www.astropy.org/>`_
+	* `2DFFT <http://astro.host.ualr.edu/2DFFT/>`_
 
 Users new to Python, IRAF, and/or AstroPy are encouraged to make use of an
 installation package such as `Ureka <http://ssb.stsci.edu/ureka/>`_.
 
 Background
-==========
+##########
 
 The tightness of arms in the disks of spiral galaxies (otherwise known as pitch
 angle) can be measured using the `2DFFT <http://astro.host.ualr.edu/2DFFT/>`_
@@ -45,7 +46,7 @@ to automate as many of these tasks as possible.  We hope to make these utilities
 near future.
 
 User guide
-==========
+##########
 
 Please see the ``docs`` folder for detailed instructions on how to get started.
 
@@ -57,7 +58,8 @@ Please see the ``docs`` folder for detailed instructions on how to get started.
 .. note::
 
 	This guide was written for use with simulation data where galaxy
-	images are already face-on, and includes no scripts for de-projecting.
+	images are already face-on, and currently includes no scripts for
+	de-projecting.
 
-	Pitch angle data from observational FITS that have been deprojected should
-	work fine.
+	Observational data in FITS images that have been deprojected will work as
+	intended.
