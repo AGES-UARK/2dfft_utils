@@ -1,14 +1,17 @@
+.. _user-guide::
+
 **********
 User Guide
 **********
 
 This guide explains both the "manual" way to complete each step in the pitch
-angle measurement process described in
+angle measurement process, then points the user to the script that automates
+that step.
 
 .. note::
 
 	Instructions have been tested only in Ubuntu and Mac.
-	Instructions may need to be modified, and are not guaranteed for Windows.
+	Instructions may need to be modified.
 
 .. note::
 
@@ -19,6 +22,7 @@ angle measurement process described in
 	Observational data in FITS images that have been deprojected will work as
 	intended.
 
+
 Contents
 ########
 
@@ -26,17 +30,18 @@ Contents
 
 * (Optional) Converting images (PS to FITS)
 
-* Prepping images for 2DFFT
-..* Finding image center
-..* Finding galaxy radius
-..* Cropping
-..* Converting (FITS to text)
+* Prepping images for 2DFFT :ref:`prepping-images`
+  * Finding image center
+  * Finding galaxy radius
+  * Cropping
+  * Converting (FITS to text)
 
 * Running 2DFFT
 
 * Analyzing 2DFFT Data
-..* Plotting output
-..* Determining pitch angle
+  * Plotting output
+  * Determining pitch angle
+
 
 .. _background::
 
@@ -54,6 +59,7 @@ to automate as many of these tasks as possible.  We hope to make these utilities
 (which currently exist as standalone scripts) into a cohesive package in the
 near future.
 
+
 .. _ps-to-fits::
 
 (Optional) Converting images (PS to FITS)
@@ -62,72 +68,138 @@ near future.
 .. note::
 
 	Please complete this step ONLY if you need to convert simulation output data
-	from postcript to fits.  Otherwise, skip to :ref:`prepping-images`.
+	from postcript to FITS.  Otherwise, skip to :ref:`prepping-images`.
+
+	These instructions have only been tested in Ubuntu.
 
 .. note::
 
 	Script located at: 2dfft_utils/misc/ps_to_fits.py
 
 
+1. Install ImageMagick & Ghostscript
 
-Install ImageMagick & Ghostscript
+If installing these for the first time, you should install :ref:`Ghostscript`
+first, along with it's development libraries, then build :ref:`ImageMagick` from
+ source.
 
---> When first installing ImageMagick & Ghostscript, you should install Ghostscript first, along with it's development libraries, then build ImageMagick from source.  When configuring ImageMagick, link the GS libraries with a configure command such as:
+When configuring ImageMagick, link the Ghostscript libraries from the terminal:
 
-$ ./configure --with-gslib=yes
+.. code-block::
 
-This will allow ImageMagick to properly open up the .ps files.  If you get errors about encoding/decoding (see the ImageMagick readme), this is most likely a GS library linking problem, so make sure you have the newest/most stable verisons of IM/GS/GS dev libs & link those libraries.
+    ./configure --with-gslib=yes
 
---> The basic file conversion goes like:
+This will allow ImageMagick to properly open up the .ps files.  If you get
+errors about encoding/decoding (see the ImageMagick readme), this is most likely
+a Ghostscript library linking problem, so make sure you have the newest/most
+stable versions of ImageMagick/Ghostscript/corresponding developer libraries and
+link them.
 
-$ convert input_file.ext1 output_file.ext2
+2. Convert files
 
-...but you may have to use a version of the command that explicitly defines the extension types:
+The basic file conversion goes like:
 
-$ convert ext1:input_file.ext1 ext2:output_file.ext2
+.. code-block::
 
---> Since the default file conversion from a colored .ps file to a .fit file will give you a data cube (one image for each R,G & B channels), you want to convert the .ps file to a grayscale image or otherwise flatten the image.
+	convert <input_file> <output_file>
 
-$ convert -depth 8 input_file.ps -grayscale Rec709Luminance -resize 600x600 fits:output_file.ps
+You must explicitly indicate the file format, either in the file name or with an
+alternate form of the conversion command:
 
-You can choose different grayscale settings, but all 6 or so produce images with similar light intensity histograms.
+.. code-block::
 
---> To do a batch conversion, use script ps_to_fits.py
+	convert <input format>:<input_file> <output format>:<output_file>
 
+Since the default file conversion from a colored .ps file to FITS will give you
+a data cube (one image for each R,G & B channels), you want to convert the .ps
+file to grayscale image or otherwise flatten the image:
 
+.. code-block::
+
+	convert -depth 8 input_file.ps -grayscale Rec709Luminance -resize 600x600 fits:output_file.ps
+
+You can choose different grayscale settings, but all 6 or so produce images with
+similar light intensity histograms.
+
+3. To do a batch conversion, use script ps_to_fits.py
 
 .. note::
 
-	With ImageMagick, you can also:
+	You can also:
 
 	* Convert all images to JPG, PNG or another "normal" image format for easy
 	viewing later.
 	* Stitch your images into a movie showing your simulation with ffmpeg.
 	You may want rename your jpgs from the default ``frame.X.XXXGyr.`` prefix to
 	something like 00.jpg, 01.jpg, etc.  Use Metamorphoses (available in
-	Linux/Windows/Mac) if you prefer a GUI program for renaming files).
+	Linux/Windows/Mac) if you prefer a GUI program for renaming files.
 
 
+.. _prepping-images::
+
+Prepping Images for 2DFFT
+#########################
+
+Prior to measuring spiral pitch angles with 2DFFT, the original galaxy image
+must be modified in order to get the best measurement possible.  After
+completing image manipulations, FITS files are converted into text files for
+input into 2DFFT.
+
+2DFFT assumes that:
+
+	* Input spirals will be "face on" (not inclined).
+	* Images are square, with the center of the spiral at the center of the image.
+	* There are no other structures present in the image (e.g., other galaxies, stars)
+
+.. note::
+
+	This guide does not contain instructions on how to de-project,
+	star-subtract or isolate individual galaxies within an image, and therefore
+	we offer no scripts to automate these tasks at the present.
+
+Since this guide/package was originally written with isolated, simulated
+galaxies in mind, we assume that you have "face-on", isolated galaxy images from
+hereon out, but that you will still need to center/crop these.
+
+.. note::
+
+	It's useful here to start a spreadsheet for every simulation with a column
+	for the following snapshot attributes, which you will fill out as you go
+	through the pitch measurement process:
+
+	* Snapshot time
+	* x & y coords of image center
+	* Maximum radius of the image (which will become the radius of your cropped fits file)
+	* 90% of the maximum radius (pitch angles beyond this point not reliable)
+	* Bar radius (where applicable) or bulge radius (if non-circular)
+	* Number of arms (visually confirm from image)
+	* Dominant mode(s) (from p_max vs radius & pitch vs radius plots)
+	* Inner radius 1 (the minimum radius of the stable region selected)
+	* Inner radius 2 (the maximum radius of the stable region selected)
+	* Average pitch	(the average pitch angle from the stable region selected)
+	* Standard error (standard deviation from the stable region selected)
+	* 2DFFT error (error due to 2DFFT; see Davis et al. 2012)
+	* Final error (std. dev. + 2DFFT)
+
+Finding image center
+====================
+
+
+
+Finding galaxy radius
+=====================
+
+Cropping
+========
+
+Converting (FITS to text)
+=========================
 
 # 2) Pitch Angle Measurement
 
---> To measure pitch angles, you need the 2DFFT code referred to in Davis et al. 2012 (see paper for link), as well as IRAF (or PyRAF) & DS9.  The latter two available as standalone software, or as part of an astronomy software distribution such as Ureka or Scisoft.  Ureka is available for all Linux and MacOSX distros. Scisoft is available for Redhat/Fedora Linux distros (officially) and for Mac OSX distros (through an unofficial source).
+-->
 
---> It's useful here to start a spreadsheet for every simulation with a column for the following snapshot attributes, which you will fill out as you go through the pitch measurement process:
 
-	- Snapshot time
-	- x & y Coords of image center
-	- Maximum radius of the image (which will become the radius of your cropped fits file)
-	- 90% of the maximum radius (pitch angles beyond this point not reliable)
-	- Bar radius (where applicable) or bulge radius (if non-circular)
-	- Number of arms (visually confirm from image)
-	- Dominant mode(s) (from p_max vs radius & pitch vs radius plots)
-	- Inner radius 1 (the minimum radius of the stable region selected)
-	- Inner radius 2 (the maximum radius of the stable region selected)
-	- Average pitch	(the average pitch angle from the stable region selected)
-	- Standard error (standard deviation from the stable region selected)
-	- 2DFFT error (error due to 2DFFT; see Davis et al. 2012)
-	- Final error ( std dev + 2DFFT error)
 
 
 --> For the rest of this section, I've copied/pasted/modified Benjamin Davis' instructions for pitch angle measurement, selecting those pertinent to our simulation snapshots, which are already face-on projected & don't need deprojection, star subtraction, etc.
