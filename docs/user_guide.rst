@@ -50,14 +50,15 @@ Contents
 
 * Prepping images for 2DFFT :ref:`prepping-images`
 
-	* Finding image center
-	* Finding galaxy radius
-	* Cropping
-	* Converting (FITS to text)
+  * Finding image center
+  * Finding galaxy radius
+  * Cropping
+  * Converting (FITS to text)
 
 * Running 2DFFT
 
 * Analyzing 2DFFT Data
+
   * Plotting output
   * Determining pitch angle
 
@@ -94,9 +95,10 @@ near future.
 Installation Notes
 ==================
 
-If installing these for the first time, you should install :ref:`Ghostscript`
-first, along with it's development libraries, then build :ref:`ImageMagick` from
- source.
+If installing these for the first time, you should install
+`Ghostscript <http://www.ghostscript.com/>`_ first, along with it's development
+libraries, then build
+`ImageMagick <http://www.imagemagick.org/script/index.php>`_ from source.
 
 When configuring ImageMagick, link the Ghostscript libraries from the terminal:
 
@@ -150,9 +152,9 @@ Use script ``ps_to_fits.py``.  Modify file-naming convention to fit your needs.
 
 	You can also:
 
-	* Convert all images to JPG, PNG or another "normal" image format for easy
-	viewing later.
+	* Convert all images to JPG, PNG or another "normal" image format for easy viewing later.
 	* Stitch your images into a movie showing your simulation with ffmpeg.
+
 	You may want rename your jpgs from the default ``frame.X.XXXGyr.`` prefix to
 	something like 00.jpg, 01.jpg, etc.  Use Metamorphoses (available in
 	Linux/Windows/Mac) if you prefer a GUI program for renaming files.
@@ -170,9 +172,9 @@ input into 2DFFT.
 
 2DFFT assumes that:
 
-	* Input spirals will be "face on" (not inclined).
-	* Images are square, with the center of the spiral at the center of the image.
-	* There are no other structures present in the image (e.g., other galaxies, stars)
+* Input spirals will be "face on" (not inclined).
+* Images are square, with the center of the spiral at the center of the image.
+* There are no other structures present in the image (e.g., other galaxies, stars)
 
 .. note::
 
@@ -208,6 +210,7 @@ of the galaxy.
 	* Standard error (standard deviation from the stable region selected)
 	* 2DFFT error (error due to 2DFFT; see Davis et al. 2012)
 	* Final error (std. dev. + 2DFFT)
+
 
 Finding image center
 ====================
@@ -267,14 +270,50 @@ to your file-naming scheme, guess for image center, etc.
 and IRAF's guesses for their center coordinates.  Use this output for the next
 step.
 
+
 Finding galaxy radius
 =====================
 
 Manual Method
 -------------
 
+1. Open up your image in DS9.
+
+2. Change the color scale to ``logarithmic``, ``histogram`` or something else that shows great contrast between pixels with values 0 and 1.
+
+3. Click on the approximate image center.
+
+  * You should see a circle appear.  You can change the color, shape, and other properties under "Region..."
+
+4. Click inside the circle that appears
+
+  * 4 small squares should appear at each corner of the circle.  Click on one of those squares, and drag it until the circle encloses the disk structure.
+
+5. Recenter and fine-tune the size of the circle to find the radius of the disk.
+
+  * Click on "Region > Get Information...", and edit the entry for the center using the coordinates you settled on using imcntr.
+  * After resizing the circle, take note of the radius, rounding up or down to the nearest pixel, and add one pixel to this quantity if its even.
+
+6. Record the final radius.
+
+.. note::
+
+	If you wish to use the output from this process to automate the next step
+	(cropping) in Python/PyRAF (such as with ``auto_crop_fits.py``), save your
+	radii as a list in a text file.
+
 Automated Method
 ----------------
+
+.. note::
+
+	Script not yet in code base.
+
+.. note::
+
+	Other ways to automate this process include using IRAF's ellipse or the
+	FITSIO library.
+
 
 Cropping
 ========
@@ -284,6 +323,7 @@ Manual Method
 
 Automated Method
 ----------------
+
 
 Converting (FITS to text)
 =========================
@@ -295,66 +335,49 @@ Automated Method
 ----------------
 
 
+3) Save a cropped copy of the image with IRAF/Pyraf (or use fitscopy with the FITSIO C or Fortran libraries).
 
- Use misc/get_center.py.
+	vocl> imcopy input.fit[center x - radius:center x + radius,center y - radius:center y + radius] output_crop.fit
 
+	For example, a 600x600px image, center at (300,300) and radius of 130: vocl> imcopy frame.0.000Gyr.fit[170:430,170:430] 0.000Gyr_crop.fit
 
+	Open up the cropped image in DS9 or Gimp, etc., to make sure it cropped right.  The final image should be a square. If you open it up in DS9, check the header information under "File > Display Fits Header..." to find the dimensions.
 
-	2) Now, back to DS9: Find the radial extent of the disk structure in your image.
-
-		i) Click on the approximate center of the image.  You should see a circle appear.  You can change the color, shape, and other properties under "Region..."
-		ii) Click inside the circle, and 4 small squares should appear at each corner of the circle.  Click on one of those squares, and drag it until the circle encloses the disk structure.
-		iii) If you're having trouble finding the edge of the disk, change the scale to logarithmic or histogram.
-		iv) Recenter & fine-tune the size of the circle to find the radius of the disk.  Click on "Region > Get Information...", and edit the entry for the center using the coordinates you settled on using imcntr.  After resizing the circle, take note of the radius, rounding up or down to the nearest pixel, and add one pixel to this quantity.  Record the final radius.
-
-		***NOTE*** If you wish to automate this process, you may use the IRAF process ellipse or write your own script (Pyraf modules in Python, or FITSIO in C/C++/Fortran, etc.) to find the radial extent of the galaxy in each image.
-
-		***NOTE*** If you wish to use the output from this process to automate the next step (cropping) in Python/Pyraf (such as with auto_crop_fits.py), save your radii as a list in a text file.
-
-
-	3) Save a cropped copy of the image with IRAF/Pyraf (or use fitscopy with the FITSIO C or Fortran libraries).
-
-		vocl> imcopy input.fit[center x - radius:center x + radius,center y - radius:center y + radius] output_crop.fit
-
-		For example, a 600x600px image, center at (300,300) and radius of 130: vocl> imcopy frame.0.000Gyr.fit[170:430,170:430] 0.000Gyr_crop.fit
-
-		Open up the cropped image in DS9 or Gimp, etc., to make sure it cropped right.  The final image should be a square. If you open it up in DS9, check the header information under "File > Display Fits Header..." to find the dimensions.
-
-		***NOTE*** Note that this script works if you have output like that of get_center.py (see above step - Find Center).  Use misc/auto_crop_fits.py.
+	***NOTE*** Note that this script works if you have output like that of get_center.py (see above step - Find Center).  Use misc/auto_crop_fits.py.
 
 
 
-	4) Convert the cropped FITS file to text:
+4) Convert the cropped FITS file to text:
 
-		You'll be using wtextimage, which is in: dataio > wtextimage
+	You'll be using wtextimage, which is in: dataio > wtextimage
 
-		You can a) Edit the wtextimage parameter file once for all files, and use the package as: > wtext input.fit output.txt OR b) Edit the wtextimage parameter file for every text file you make, and call the package as: > wtext
+	You can a) Edit the wtextimage parameter file once for all files, and use the package as: > wtext input.fit output.txt OR b) Edit the wtextimage parameter file for every text file you make, and call the package as: > wtext
 
-		To edit the parameter file:
+	To edit the parameter file:
 
-		vocl> epar wtext
+	vocl> epar wtext
 
-		Replace the following lines with the appropriate text:
-			input=		[blank] OR input.fit
-			output= 	[blank] OR output_crop.txt
-			(header= 				 no)
-			(pixels= 				yes)
-			(maxline= 				 10)
+	Replace the following lines with the appropriate text:
+		input=		[blank] OR input.fit
+		output= 	[blank] OR output_crop.txt
+		(header= 				 no)
+		(pixels= 				yes)
+		(maxline= 				 10)
 
-		***NOTE: [PUT THIS IN THE FIRST INSTANCE OF EPAR USE] If you're having trouble editing with epar from the cl> or vocl> prompt in IRAF (especially if it seems that, instead of deleting or overwriting a line, you get a lot of "~"'s, or a line isn't being totally overwritten), do the following:
+	***NOTE: [PUT THIS IN THE FIRST INSTANCE OF EPAR USE] If you're having trouble editing with epar from the cl> or vocl> prompt in IRAF (especially if it seems that, instead of deleting or overwriting a line, you get a lot of "~"'s, or a line isn't being totally overwritten), do the following:
 
-			i) Use the up/down arrow keys until the cursor rests on the line you want to edit.
-			ii) Use the "Delete" button until the previous file name or preference has been completely overwritten by "~"'s. (Location--in the group of keys around the home/page up/page down keys on the keyboard--NOT the "Backspace" button.  For Mac keyboards--both are labeled "delete").
-			iii) Use the up/down arrows to leave the field, then go back & type in your new file name/preference.
-			iv) Repeat until all your fields are edited.  Type :q to save & quit, or :go to save and execute wtext.
+		i) Use the up/down arrow keys until the cursor rests on the line you want to edit.
+		ii) Use the "Delete" button until the previous file name or preference has been completely overwritten by "~"'s. (Location--in the group of keys around the home/page up/page down keys on the keyboard--NOT the "Backspace" button.  For Mac keyboards--both are labeled "delete").
+		iii) Use the up/down arrows to leave the field, then go back & type in your new file name/preference.
+		iv) Repeat until all your fields are edited.  Type :q to save & quit, or :go to save and execute wtext.
 
-			***NOTE*** You will not have this problem in Pyraf, as the epar function opens up a GUI window to edit the parameters of any module.
+		***NOTE*** You will not have this problem in Pyraf, as the epar function opens up a GUI window to edit the parameters of any module.
 
-		Open up output_crop.txt, and if it's there, delete the blank row at the top and save the text file.  If you have header=no set, this should not be a problem.
+	Open up output_crop.txt, and if it's there, delete the blank row at the top and save the text file.  If you have header=no set, this should not be a problem.
 
-		***NOTE*** You can automate this process with an IRAF OR a Pyraf script.  IRAF scripts are harder to work with than Pyraf, so the latter is recommended.
+	***NOTE*** You can automate this process with an IRAF OR a Pyraf script.  IRAF scripts are harder to work with than Pyraf, so the latter is recommended.
 
-		!!!! Currently using misc/fit2txt_all.cl instead of a python script.
+	!!!! Currently using misc/fit2txt_all.cl instead of a python script.
 
 
 --> To run the Pitch Angle code, cd over to it's directory after copying output_crop.txt to the code folder.
