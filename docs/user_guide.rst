@@ -22,6 +22,24 @@ that step.
 	Observational data in FITS images that have been deprojected will work as
 	intended.
 
+.. note::
+
+	Code examples use brackets, < >, to signify that you should insert your own
+	file/directory names, etc.  Replace everything inside, including the
+	brackets.
+
+	For instance...
+
+	.. code-block::
+
+		convert <input> <output>
+
+	...would be replaced by something like...
+
+	.. code-block::
+
+		convert my_input_file.csv my_output_file.txt
+
 
 Contents
 ########
@@ -73,12 +91,8 @@ near future.
 
 	These instructions have only been tested in Ubuntu.
 
-.. note::
-
-	Script located at: 2dfft_utils/misc/ps_to_fits.py
-
-
-1. Install ImageMagick & Ghostscript
+Installation Notes
+==================
 
 If installing these for the first time, you should install :ref:`Ghostscript`
 first, along with it's development libraries, then build :ref:`ImageMagick` from
@@ -96,7 +110,8 @@ a Ghostscript library linking problem, so make sure you have the newest/most
 stable versions of ImageMagick/Ghostscript/corresponding developer libraries and
 link them.
 
-2. Convert files
+Manual Method
+=============
 
 The basic file conversion goes like:
 
@@ -122,7 +137,14 @@ file to grayscale image or otherwise flatten the image:
 You can choose different grayscale settings, but all 6 or so produce images with
 similar light intensity histograms.
 
-3. To do a batch conversion, use script ps_to_fits.py
+Automated Method
+================
+
+Use script ``ps_to_fits.py``.  Modify file-naming convention to fit your needs.
+
+.. note::
+
+	Script located at: ``2dfft_utils/misc/ps_to_fits.py``
 
 .. note::
 
@@ -160,7 +182,12 @@ input into 2DFFT.
 
 Since this guide/package was originally written with isolated, simulated
 galaxies in mind, we assume that you have "face-on", isolated galaxy images from
-hereon out, but that you will still need to center/crop these.
+hereon out.
+
+You will use IRAF/PyRAF to crop the image & to convert it to a text file.
+
+You can use DS9 to look at the image, & find/confirm the center & radial extent
+of the galaxy.
 
 .. note::
 
@@ -185,51 +212,91 @@ hereon out, but that you will still need to center/crop these.
 Finding image center
 ====================
 
+Manual Method
+-------------
 
+1. Start DS9, IRAF and cd from the IRAF terminal to the directory containing
+your FITS files.
+
+2. Make initial guess of image center's x, y coordinates from visual inspection
+in DS9.
+
+3. Find the image center in IRAF.
+
+	.. code-block::
+
+		imcntr frame.X.XXXGyr.fit [<your guess for x>] [<your guess for y>]
+
+	.. note::
+
+	Use an odd number for the box size IRAF uses to sample the image,
+	something bigger than the default of 5 (say, 31 for dimensions of a few
+	hundred pixels on a side).
+
+	To change this & other ``imcntr`` parameters, type: ``epar imcntr``.
+	To quit the parameter editing mode, type: ``:q`` or ``:q!`` to exit without
+	saving any changes (just as in Vim).
+
+	See the `imcntr <http://iraf.net/irafhelp.php?val=proto.imcntr&help=Help+Page>`_
+	page for more information.
+
+4. Check results in DS9.
+
+5. Round resulting coordinates to nearest whole number (since you can't crop by
+fractions of pixels) and record your result.
+
+Automated Method
+----------------
+
+.. note::
+
+	Script located in ``2dfft_utils/misc/get_center.py``.
+
+1. Open up terminal and cd over to the directory containing your FITS files.
+
+2. Put ``get_center.py`` in the same directory, and modify the script according
+to your file-naming scheme, guess for image center, etc.
+
+3. Run the script.
+
+	.. code-block::
+
+		python get_center.py
+
+3. The script will give you a file, ``all_centers.txt``, containing image names
+and IRAF's guesses for their center coordinates.  Use this output for the next
+step.
 
 Finding galaxy radius
 =====================
 
+Manual Method
+-------------
+
+Automated Method
+----------------
+
 Cropping
 ========
+
+Manual Method
+-------------
+
+Automated Method
+----------------
 
 Converting (FITS to text)
 =========================
 
-# 2) Pitch Angle Measurement
+Manual Method
+-------------
 
--->
-
-
-
-
---> For the rest of this section, I've copied/pasted/modified Benjamin Davis' instructions for pitch angle measurement, selecting those pertinent to our simulation snapshots, which are already face-on projected & don't need deprojection, star subtraction, etc.
+Automated Method
+----------------
 
 
---> Start IRAF & DS9 (from an xterm window on a Mac, or a regular terminal in Linux).  (AGES set-up uses a start-up file, '.startiraf', which should open up a DS9 window and an IRAF session with the command: $ startiraf )
 
-	Open up IRAF with the command 	$ cl 	from the IRAF directory, then cd over to the location of your FITS files.
-
-	Open up DS9 with the command 	$ ds9 	OR by double-clicking on the DS9 executable, then open up your image.
-
-	-> You will use IRAF to crop the image & to convert it to a text file. You can use DS9 to look at the image, & find/confirm the center & radial extent of the galaxy.
-
-	1) Find the center:
-
-		Command: vocl> imcntr frame.X.XXXGyr.fit [guess for x] [guess for y]
-
-		Replace the last two arguments with your guess for the x- and y-coordinates of the image's center.
-
-		***NOTE*** Use an odd number for the box size IRAF uses to sample the image, something bigger than the default of 5 (say, 31).  To change this & other imcntr parameters, type: vocl> epar imcntr ; to quit the parameter editing mode, type: vocl> :q 	OR 	:q! 	to exit without saving any changes (just as in vi).
-
-		Each time you make a guess, use DS9 to look at frame.X.XXXGyr.fit. Open the image, and click on the approximate center.  Use the arrow keys to move the square in the preview window until it lands on a pixel in the middle (brightest) part of the galaxy.  For a 600x600 px image made using the described process so far, the center should be at about (300,300).  Write/save your initial x & y positions & give those to IRAF.  IRAF will then give you it's own center coordinates.
-
-		** Note ** The center will most likely not be at a particular pixel. For instance, if IRAF gives you center coordinates x: 300.556  y: 300.130 , round these to the nearest whole number (you can't crop half-pixels here).
-
-		See the iraf.net page for imcntr for more help: http://iraf.net/irafhelp.php?val=proto.imcntr&help=Help+Page
-
-		***NOTE***
-		This process can easily be automated through use of a Python script using the Pyraf installation, especially for images that contain single galaxies and/or few distractions such as background stars, etc. Use misc/get_center.py.
+ Use misc/get_center.py.
 
 
 
