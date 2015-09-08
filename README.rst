@@ -25,30 +25,30 @@ use), so users are encouraged to look at individual script dependencies.
 
 If you plan on using all the scripts, you will need the following:
 
-	* :ref:`Python` (tested only on 2.7)
-	* :ref:`Numpy`
-	* :ref:`Matplotlib`
-	* :ref:`IRAF`
-	* :ref:`PyRAF`
-	* :ref:`AstroPy`
-	* :ref:`2DFFT`
+	* `Python <https://www.python.org/>`_ (tested only on 2.7)
+	* `Numpy <http://www.numpy.org/>`_
+	* `Matplotlib <http://matplotlib.org/>`_
+	* `IRAF <http://iraf.noao.edu/>`_
+	* `PyRAF <http://www.stsci.edu/institute/software_hardware/pyraf>`_
+	* `AstroPy <http://www.astropy.org/>`_
+	* `2DFFT <http://astro.host.ualr.edu/2DFFT/>`_
 
 Optional dependencies:
 
-	* :ref:`Ghostscript`
-	* :ref:`ImageMagick`
+	* `Ghostscript <http://www.ghostscript.com/>`_
+	* `ImageMagick <http://www.imagemagick.org/script/index.php>`_
 
 Users new to Python, IRAF, and/or AstroPy are encouraged to make use of an
-installation package such as :ref:`Ureka`, which includes all main dependencies
-(other than 2DFFT).
+installation package such as `Ureka <http://ssb.stsci.edu/ureka/>`_, which
+includes all main dependencies (other than 2DFFT).
 
 Background
 ##########
 
 The tightness of arms in the disks of spiral galaxies (otherwise known as pitch
-angle) can be measured using the :ref:`2DFFT`
+angle) can be measured using the `2DFFT <http://astro.host.ualr.edu/2DFFT/>`_
 (2-Dimensional Fast Fourier Transform) package described in
-:ref:`Davis et al. 2012 <2dfft-paper>`.
+`Davis et al. 2012 <http://adsabs.harvard.edu/abs/2012ApJS..199...33D>`_
 
 Taking a large number of images through the pitch angle measurement process can
 be very time-intensive, so we put together a number of (mostly) Python scripts

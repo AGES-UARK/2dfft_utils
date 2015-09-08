@@ -31,10 +31,11 @@ Contents
 * (Optional) Converting images (PS to FITS)
 
 * Prepping images for 2DFFT :ref:`prepping-images`
-  * Finding image center
-  * Finding galaxy radius
-  * Cropping
-  * Converting (FITS to text)
+
+	* Finding image center
+	* Finding galaxy radius
+	* Cropping
+	* Converting (FITS to text)
 
 * Running 2DFFT
 
