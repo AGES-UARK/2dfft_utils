@@ -9,6 +9,7 @@ angle measurement process, then points the user to the script that automates
 that step.
 
 ----
+
 .. note::
 
 	Instructions have been tested only in Ubuntu and Mac.
