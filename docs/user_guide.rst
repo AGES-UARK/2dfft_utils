@@ -1,4 +1,4 @@
-.. _user-guide::
+.. _user-guide:
 
 **********
 User Guide
@@ -8,10 +8,14 @@ This guide explains both the "manual" way to complete each step in the pitch
 angle measurement process, then points the user to the script that automates
 that step.
 
+...
+
 .. note::
 
 	Instructions have been tested only in Ubuntu and Mac.
 	Instructions may need to be modified.
+
+...
 
 .. note::
 
@@ -22,9 +26,11 @@ that step.
 	Observational data in FITS images that have been deprojected will work as
 	intended.
 
+...
+
 .. note::
 
-	Code examples use brackets, < >, to signify that you should insert your own
+	Code examples use brackets, ``< >``, to signify that you should insert your own
 	file/directory names, etc.  Replace everything inside, including the
 	brackets.
 
@@ -40,6 +46,8 @@ that step.
 
 		convert my_input_file.csv my_output_file.txt
 
+...
+
 
 Contents
 ########
@@ -48,7 +56,7 @@ Contents
 
 * (Optional) Converting images (PS to FITS)
 
-* Prepping images for 2DFFT :ref:`prepping-images`
+* Prepping images for 2DFFT
 
   * Finding image center
   * Finding galaxy radius
@@ -63,7 +71,7 @@ Contents
   * Determining pitch angle
 
 
-.. _background::
+.. _background:
 
 Background
 ##########
@@ -80,17 +88,19 @@ to automate as many of these tasks as possible.  We hope to make these utilities
 near future.
 
 
-.. _ps-to-fits::
+.. _ps-to-fits:
 
 (Optional) Converting images (PS to FITS)
 #########################################
 
+...
 .. note::
 
 	Please complete this step ONLY if you need to convert simulation output data
 	from postcript to FITS.  Otherwise, skip to :ref:`prepping-images`.
 
 	These instructions have only been tested in Ubuntu.
+...
 
 Installation Notes
 ==================
@@ -119,14 +129,14 @@ The basic file conversion goes like:
 
 .. code-block::
 
-	convert <input_file> <output_file>
+	convert <input file> <output file>
 
 You must explicitly indicate the file format, either in the file name or with an
 alternate form of the conversion command:
 
 .. code-block::
 
-	convert <input format>:<input_file> <output format>:<output_file>
+	convert <input format>:<input file> <output format>:<output file>
 
 Since the default file conversion from a colored .ps file to FITS will give you
 a data cube (one image for each R,G & B channels), you want to convert the .ps
@@ -144,10 +154,13 @@ Automated Method
 
 Use script ``ps_to_fits.py``.  Modify file-naming convention to fit your needs.
 
+...
 .. note::
 
 	Script located at: ``2dfft_utils/misc/ps_to_fits.py``
+...
 
+...
 .. note::
 
 	You can also:
@@ -158,9 +171,10 @@ Use script ``ps_to_fits.py``.  Modify file-naming convention to fit your needs.
 	You may want rename your jpgs from the default ``frame.X.XXXGyr.`` prefix to
 	something like 00.jpg, 01.jpg, etc.  Use Metamorphoses (available in
 	Linux/Windows/Mac) if you prefer a GUI program for renaming files.
+...
 
 
-.. _prepping-images::
+.. _prepping-images:
 
 Prepping Images for 2DFFT
 #########################
@@ -176,11 +190,13 @@ input into 2DFFT.
 * Images are square, with the center of the spiral at the center of the image.
 * There are no other structures present in the image (e.g., other galaxies, stars)
 
+...
 .. note::
 
 	This guide does not contain instructions on how to de-project,
 	star-subtract or isolate individual galaxies within an image, and therefore
 	we offer no scripts to automate these tasks at the present.
+...
 
 Since this guide/package was originally written with isolated, simulated
 galaxies in mind, we assume that you have "face-on", isolated galaxy images from
@@ -191,6 +207,7 @@ You will use IRAF/PyRAF to crop the image & to convert it to a text file.
 You can use DS9 to look at the image, & find/confirm the center & radial extent
 of the galaxy.
 
+...
 .. note::
 
 	It's useful here to start a spreadsheet for every simulation with a column
@@ -208,8 +225,9 @@ of the galaxy.
 	* Inner radius 2 (the maximum radius of the stable region selected)
 	* Average pitch	(the average pitch angle from the stable region selected)
 	* Standard error (standard deviation from the stable region selected)
-	* 2DFFT error (error due to 2DFFT; see Davis et al. 2012)
+	* 2DFFT error (error due to 2DFFT; see `Davis et al. 2012 <http://adsabs.harvard.edu/abs/2012ApJS..199...33D>`_)
 	* Final error (std. dev. + 2DFFT)
+...
 
 
 Finding image center
@@ -218,11 +236,9 @@ Finding image center
 Manual Method
 -------------
 
-1. Start DS9, IRAF and cd from the IRAF terminal to the directory containing
-your FITS files.
+1. Start DS9, IRAF and cd from the IRAF terminal to the directory containing your FITS files.
 
-2. Make initial guess of image center's x, y coordinates from visual inspection
-in DS9.
+2. Make initial guess of image center's x, y coordinates from visual inspection in DS9.
 
 3. Find the image center in IRAF.
 
@@ -230,11 +246,12 @@ in DS9.
 
 		imcntr frame.X.XXXGyr.fit [<your guess for x>] [<your guess for y>]
 
-	.. note::
+...
+.. note::
 
-	Use an odd number for the box size IRAF uses to sample the image,
-	something bigger than the default of 5 (say, 31 for dimensions of a few
-	hundred pixels on a side).
+	Use an odd number for the box size IRAF uses to sample the image, something
+	bigger than the default of 5 (say, 31 for dimensions of a few hundred pixels
+	on a side).
 
 	To change this & other ``imcntr`` parameters, type: ``epar imcntr``.
 	To quit the parameter editing mode, type: ``:q`` or ``:q!`` to exit without
@@ -242,6 +259,7 @@ in DS9.
 
 	See the `imcntr <http://iraf.net/irafhelp.php?val=proto.imcntr&help=Help+Page>`_
 	page for more information.
+...
 
 4. Check results in DS9.
 
@@ -251,9 +269,11 @@ fractions of pixels) and record your result.
 Automated Method
 ----------------
 
+...
 .. note::
 
 	Script located in ``2dfft_utils/misc/get_center.py``.
+...
 
 1. Open up terminal and cd over to the directory containing your FITS files.
 
@@ -287,7 +307,7 @@ Manual Method
 
 4. Click inside the circle that appears
 
-  * 4 small squares should appear at each corner of the circle.  Click on one of those squares, and drag it until the circle encloses the disk structure.
+  * Four small squares should appear at each corner of the circle.  Click on one of those squares, and drag it until the circle encloses the disk structure.
 
 5. Recenter and fine-tune the size of the circle to find the radius of the disk.
 
@@ -296,23 +316,29 @@ Manual Method
 
 6. Record the final radius.
 
+...
 .. note::
 
 	If you wish to use the output from this process to automate the next step
 	(cropping) in Python/PyRAF (such as with ``auto_crop_fits.py``), save your
 	radii as a list in a text file.
+...
 
 Automated Method
 ----------------
 
+...
 .. note::
 
 	Script not yet in code base.
+...
 
+...
 .. note::
 
 	Other ways to automate this process include using IRAF's ellipse or the
 	FITSIO library.
+...
 
 
 Cropping
@@ -321,8 +347,48 @@ Cropping
 Manual Method
 -------------
 
+1. Open up IRAF in terminal and cd to the directory containing your FITS files.
+
+2. Using the center and radius you found earlier, crop your image.
+
+	.. code-block:
+
+		imcopy <input FITS>[<calculated low x>:<calculated high x>,<calculated low y>:<calculated high y>] <output FITS>
+
+  Where:
+
+  * low x = center x - radius
+  * high x = center x + radius
+  * low y = center y - radius
+  * high y = center y + radius
+
+3. You can check the final dimensions of the FITS image in DS9 by looking at the header information under ``File > Display Fits Header...``
+You can also use `Gimp <http://www.gimp.org/>`_ to look at FITS files.
+
 Automated Method
 ----------------
+
+...
+.. note::
+
+	Script located in ``2dfft_utils/misc/auto_crop_fits.py``.
+...
+
+1. Open up a terminal and cd over to the directory containing your FITS files.
+
+2. Put ``auto_crop_fits.py`` in the same directory, and modify the script according
+to your file-naming scheme, etc.
+
+3. Put ``all_centers.txt`` (a list of the center coordinates of all your directory's FITS files) and ``r_max.txt`` (a list of the radii of all your directory's FITS files) into your directory.  See previous steps above.
+  * The order of the coordinates must match the order of the radii.
+
+3. Run the script.
+
+	.. code-block::
+
+		python auto_crop_fits.py
+
+3. The script will give you a cropped image, ``<original name>_crop.fits``, for each FITS file, ``<original name>.fits``, that it found and successfully cropped.
 
 
 Converting (FITS to text)
@@ -331,53 +397,83 @@ Converting (FITS to text)
 Manual Method
 -------------
 
-Automated Method
-----------------
+1. Open up IRAF in a terminal, and cd over to the directory containing your cropped FITS files.
 
+2. Load up ``wtextimage`` (in the ``dataio`` package).  You have two options for using ``wtextimage``:
 
-3) Save a cropped copy of the image with IRAF/Pyraf (or use fitscopy with the FITSIO C or Fortran libraries).
+  a. Edit the parameter file once for all images and call the package as:
 
-	vocl> imcopy input.fit[center x - radius:center x + radius,center y - radius:center y + radius] output_crop.fit
+	.. code-block::
 
-	For example, a 600x600px image, center at (300,300) and radius of 130: vocl> imcopy frame.0.000Gyr.fit[170:430,170:430] 0.000Gyr_crop.fit
+		wtext <input>.fits <output>.txt
 
-	Open up the cropped image in DS9 or Gimp, etc., to make sure it cropped right.  The final image should be a square. If you open it up in DS9, check the header information under "File > Display Fits Header..." to find the dimensions.
+  b. Edit the parameter file for every conversion, and call the package as:
 
-	***NOTE*** Note that this script works if you have output like that of get_center.py (see above step - Find Center).  Use misc/auto_crop_fits.py.
+	.. code-block::
 
+		wtext
 
+3. 	Once you've converted the file, open up the resulting text file and check to see if there is a blank row at the top.  If there is, delete it and save the file or set ``header=no`` in the parameter file and try again.
 
-4) Convert the cropped FITS file to text:
-
-	You'll be using wtextimage, which is in: dataio > wtextimage
-
-	You can a) Edit the wtextimage parameter file once for all files, and use the package as: > wtext input.fit output.txt OR b) Edit the wtextimage parameter file for every text file you make, and call the package as: > wtext
+...
+.. note::
 
 	To edit the parameter file:
 
-	vocl> epar wtext
+	.. code-block::
+
+		epar wtext
 
 	Replace the following lines with the appropriate text:
-		input=		[blank] OR input.fit
-		output= 	[blank] OR output_crop.txt
+
+		input=		<LEAVE BLANK> OR <input>.fit
+		output= 	<LEAVE BLANK> OR <input>_crop.txt
 		(header= 				 no)
 		(pixels= 				yes)
 		(maxline= 				 10)
 
-	***NOTE: [PUT THIS IN THE FIRST INSTANCE OF EPAR USE] If you're having trouble editing with epar from the cl> or vocl> prompt in IRAF (especially if it seems that, instead of deleting or overwriting a line, you get a lot of "~"'s, or a line isn't being totally overwritten), do the following:
+...
+.. note::
 
-		i) Use the up/down arrow keys until the cursor rests on the line you want to edit.
-		ii) Use the "Delete" button until the previous file name or preference has been completely overwritten by "~"'s. (Location--in the group of keys around the home/page up/page down keys on the keyboard--NOT the "Backspace" button.  For Mac keyboards--both are labeled "delete").
-		iii) Use the up/down arrows to leave the field, then go back & type in your new file name/preference.
-		iv) Repeat until all your fields are edited.  Type :q to save & quit, or :go to save and execute wtext.
+	If you're having trouble editing with epar from the ``cl>``/``vocl>`` prompt
+	(i.e., you're getting a lot of ``~``'s), do the following:
 
-		***NOTE*** You will not have this problem in Pyraf, as the epar function opens up a GUI window to edit the parameters of any module.
+	* Use PyRAF, where an ``epar`` call brings up a GUI window for editing the parameters.
 
-	Open up output_crop.txt, and if it's there, delete the blank row at the top and save the text file.  If you have header=no set, this should not be a problem.
+	OR
 
-	***NOTE*** You can automate this process with an IRAF OR a Pyraf script.  IRAF scripts are harder to work with than Pyraf, so the latter is recommended.
+	1. Use the up/down arrow keys until the cursor rests on the line you want to edit.
+	2. Use the ``Delete`` (NOT the ``Backspace``) button until the previous file name or preference has been completely overwritten by ``~``'s.
+	3. Use the up/down arrows to leave the field, then go back and type in the new file name/preference.
+	4. Repeat until all your fields are edited.  Type ``:q`` to save & quit, or ``:go`` to save and execute ``wtextimage``.
+...
 
-	!!!! Currently using misc/fit2txt_all.cl instead of a python script.
+Automated Method
+----------------
+
+.. note::
+
+	Script is located at 2dfft_utils/fit2txt_all.cl.
+
+	Script will be updated to one in Python.
+
+
+.. _running-2dfft:
+
+Running 2DFFT
+#############
+
+
+.. _analyzing-2dfft-data:
+
+Analyzing 2DFFT Data
+####################
+
+Plotting output
+===============
+
+Determining pitch angle
+=======================
 
 
 --> To run the Pitch Angle code, cd over to it's directory after copying output_crop.txt to the code folder.
