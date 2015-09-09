@@ -8,14 +8,14 @@ This guide explains both the "manual" way to complete each step in the pitch
 angle measurement process, then points the user to the script that automates
 that step.
 
-----
+...
 
 .. note::
 
 	Instructions have been tested only in Ubuntu and Mac.
 	Instructions may need to be modified.
 
-----
+...
 
 .. note::
 
@@ -25,8 +25,8 @@ that step.
 
 	Observational data in FITS images that have been deprojected will work as
 	intended.
-	
-----
+
+...
 
 .. note::
 
@@ -46,7 +46,7 @@ that step.
 
 		convert my_input_file.csv my_output_file.txt
 
-----
+...
 
 
 Contents
@@ -93,14 +93,14 @@ near future.
 (Optional) Converting images (PS to FITS)
 #########################################
 
-----
+...
 .. note::
 
 	Please complete this step ONLY if you need to convert simulation output data
 	from postcript to FITS.  Otherwise, skip to :ref:`prepping-images`.
 
 	These instructions have only been tested in Ubuntu.
-----
+...
 
 Installation Notes
 ==================
