@@ -466,7 +466,7 @@ Manual Method
 
 		epar wtext
 
-	Replace the following lines with the appropriate text:
+	Edit the following lines:
 
 	  input=	<LEAVE BLANK> OR <input>.fit
 
@@ -624,7 +624,7 @@ To make these plots, you have two options:
 
   b. Run ``python 2dfft_plots.py`` outside of a Python session.
 
-    You can use this method to make plots for individual images or in batches.  This will make both plots for all images.
+    You can use this method to make plots for individual images or in batches.  This will make both plot types.
 
 We assume here that the user prefers the latter option.
 
@@ -657,50 +657,87 @@ We assume here that the user prefers the latter option.
 Determining pitch angle
 =======================
 
+.. note::
 
---> Choose stable regions from pitch vs radius plots in conjunction with p_max vs radius plots.
+	Scripts are located at:
 
-	You should get a feel for the types of stable regions that give correct pitch angles by
-		1) Looking at all your plots beforehand.
-		2) Using Davis et al. 2012 as a reference (e.g., avoid innermost & outermost radii's pitch angles).
-		3) Overlaying logarithmic spiral arms on your images.  The easiest way to do this is with the current version of Jazmin's spiral overlay script (overlay_test-cmap_scales.py as of Sept 17 2014).
+	  2dfft_utils/analysis/slope_change.py
+	  2dfft_utils/analysis/average_pitch.py
+	  2dfft_utils/analysis/overlay-test_cmap-scales.py
 
+----
 
-	I recommend finding stable regions manually at first, but then going with an automated script, such as Jazmin's slope_change.py & average_pitch.py, especially when high numbers of FITS files are involved. Stable regions found with code should still be subject to visual inspection of plots and images.
+To determine the pitch angle of a galaxy for a particular mode, you must choose
+one or more stable regions from its `Pitch Angle vs Radius` plots, take the
+average, then confirm the pitch angle by overlaying a logarithmic spiral arm on
+top of the image of the galaxy.
 
+----
 
-	Method 1 - Manual selection of stable regions.
+.. note::
 
-		1) Determine the number of arms (from image) and dominant mode(s) (from p_max vs. radius plot).  Save this information.
+	Before you use the scripts for this section, its recommended that you get a
+	feel for the process by doing a few pitch angle measurements "by hand".
 
-		2) Visually pick out stable regions(s) (from pitch vs. radius plot).  Look at the mode(s) that dominate and correspond to the number of arms.
+	It is generally recommended that you avoid the outer 10% of a galaxy's
+	radius, since pitch angles at that distance tend to be unreliable.
+	Pitch angles taken from radii within bars or bulges will be very high and do
+	not reflect pitch angles in the disk proper.
 
-		3) Noting the inner & outer radius of the stable region(s), get the average pitch angle, standard deviation, and 2dfft error for that range of radius.  Save all this information.
-
-		The easiest way to do this is to use a calculator script, such as average_pitch.py (NOTE: as of Sept 17, 2014, this script does not yet calculate 2dfft error).
-
-		4) Check your results with a spiral overlay method.
-
-		5) Note uncertainties, such as spiral arms that aren't truely logarithmic, or regions that give the wrong sign of pitch angle (corresponding to chirality, or winding direction of the spiral).
-
-		6) Note high confidence, such as pitch vs. radius plots where more than one mode agrees for one or more regions.
-
-
-	Method 2 - Automatic selection of stable regions.
-
-		1) Put all your .py scripts in the same folder as your *_mX files.
-
-		2) Determine the number of arms (from image) and dominant mode(s) (from p_max vs. radius plot).  Save this information.
-
-		3) Run slope_change.py for the image and modes selected, and pick the best of the candidate regions selected by the script.
-
-		4) Save the inner & outer radius of the radial range selected, average pitch angle, standard deviation and 2dfft error.
-
-		5) Check your results with a spiral overlay method.
-
-		6) Note uncertainties & high confidence.
+	For more details on the caveats of using 2DFFT and how to choose stable
+	regions, see `Davis et al. 2012 <http://adsabs.harvard.edu/abs/2012ApJS..199...33D>`_
 
 
-# Checking pitch angle measurements with overlay*.py - analysis/overlay*py.
+Manual Method
+-------------
 
-TODO write instructions for this section.
+1. Determine the number of arms.
+
+  * Look at image and dominant mode(s) in `p max vs Radius` plot.
+  * Note any irregularities (spurs, lack of symmetry, etc.)
+
+2. Visually pick out stable regions(s) from `Pitch vs. Radius` plot.
+
+  * Note the inner and outer radius of the stable region(s).
+  * Compute the average pitch angle, standard deviation, and 2dfft error.
+
+3. Visually check results and note uncertainties, e.g.,
+
+  * Spiral arms that aren't truly logarithmic
+  * Regions that give the wrong chirality (winding direction of the spiral; positive is clockwise winding).
+  * Note high confidence, such as `Pitch vs Radius` plots where more than one mode agrees.
+
+
+Automated Method
+----------------
+
+1. cd to the directory containing all your ``_m1``, ``_m2``, etc., files and place ``slope_change.py``, ``average_pitch.py`` and ``overlay-test_cmap-scales.py`` in the same folder.  Edit these scripts to reflect your file-naming scheme, etc.
+
+2. Determine the number of arms.
+
+  * Look at image and dominant mode(s) in `p max vs Radius` plot.
+  * Note any irregularities (spurs, lack of symmetry, etc.).
+
+3. Run ``slope_change.py`` for the modes selected.
+
+	.. code-block::
+
+		python slope_change.py
+
+  You will be prompted for file names.
+
+4. Compare ``slope_change.py``'s suggestions for stable regions to the `Pitch Angle vs Radius` plot and pick the best one.
+
+  * ``slope_change.py`` will call ``average_pitch`` to calculate some quantities.
+
+  * If more than one region gives good results, and those regions are separated by relatively small (~a few pixels) breaks due to noise, you can combine them.
+
+5. Check your results with ``overlay-test_cmap-scales.py``.
+
+	.. code-block::
+
+		python overlay-test_cmap-scales.py
+
+  You will be prompted for input.
+
+  You can save the image by clicking on the ``Save`` button (shaped like a floppy disk) in the window that pops up.
