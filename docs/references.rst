@@ -1,0 +1,13 @@
+.. _Python: https://www.python.org/
+.. _Numpy: http://www.numpy.org/
+.. _Matplotlib: http://matplotlib.org/
+.. _IRAF: http://iraf.noao.edu/
+.. _PyRAF: http://www.stsci.edu/institute/software_hardware/pyraf
+.. _AstroPy: http://www.astropy.org/
+.. _2DFFT: http://astro.host.ualr.edu/2DFFT/
+.. _2DFFT-paper: http://adsabs.harvard.edu/abs/2012ApJS..199...33D
+.. _Ureka: http://ssb.stsci.edu/ureka/
+.. _ImageMagick: http://www.imagemagick.org/script/index.php
+.. _Ghostscript: http://www.ghostscript.com/
+.. _GIMP: http://www.gimp.org/
+.. _FITSIO: http://heasarc.gsfc.nasa.gov/fitsio/fitsio.html
