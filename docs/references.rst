@@ -9,3 +9,5 @@
 .. _Ureka: http://ssb.stsci.edu/ureka/
 .. _ImageMagick: http://www.imagemagick.org/script/index.php
 .. _Ghostscript: http://www.ghostscript.com/
+.. _GIMP: http://www.gimp.org/
+.. _FITSIO: http://heasarc.gsfc.nasa.gov/fitsio/fitsio.html
